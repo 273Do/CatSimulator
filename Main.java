@@ -1,3 +1,4 @@
+package final_task; //ディレクトリの関係で記述
 import java.util.*;
 
 // すべての生物が備える機能
@@ -142,6 +143,7 @@ public class Main {
             String items = sc.nextLine();
             labels[i] = items;
         }
+        // 入力値の説明
         System.out.println("--------------------");
         System.out.println("行動コマンド入力方法");
         System.out.println("猫ちゃん，プレイヤーの順に食事，遊び，睡眠の有無を入力してください．");
@@ -177,20 +179,29 @@ public class Main {
 
         while (lives[0].getHp() > 0 || lives[1].getHp() > 0) {
             System.out.println("day" + day + "の動作を入力");
+            String command = sc.nextLine();
+            
             for (Creature creature : lives) {
-                String command = sc.nextLine();
+                // それぞれの動作
+                for(int i = 0; i < command.length(); i++){
+                    char action = command.charAt(i);
 
-                // Execute commands based on user input
-                for (char action : command.toCharArray()) {
-                    switch (action) {
+                    switch (i & 3) {
+                        case '0':
+                            if(action == '1'){
+                                creature.eat();
+                            }
+                            break;
                         case '1':
-                            creature.eat();
+                            if(action == '1'){
+                                //猫の時はプレイヤーを，プレイヤーの時は猫を引数に渡す
+                                creature.play(lives[(lives[0] == creature) ? 1 : 0]);
+                            }
                             break;
                         case '2':
-                            creature.play(lives[(lives[0] == creature) ? 1 : 0]);
-                            break;
-                        case '3':
-                            creature.sleep();
+                            if(action == '1'){
+                                creature.eat();
+                            }
                             break;
                         default:
                             break;
@@ -199,17 +210,16 @@ public class Main {
 
                 // 猫ちゃんかプレイヤーのhpが0になったら終了
                 for (Creature life : lives) {
-                if (life.getHp() <= 0) {
-                    life.die();
-                    System.out.println("終了します");
-                    return;
+                    if (life.getHp() <= 0) {
+                        life.die();
+                        System.out.println("終了します");
+                        return;
+                    }
+                    // System.out.println(life.getName() + "のいい調子です");
                 }
-                // System.out.println(life.getName() + "のいい調子です");
             }
-
             day++;
+            // sc.close();
         }
-
-        sc.close();
     }
-}}
+}
